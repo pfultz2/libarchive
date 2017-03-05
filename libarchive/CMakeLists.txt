@@ -211,23 +211,18 @@ IF(WIN32 AND NOT CYGWIN)
 ENDIF(WIN32 AND NOT CYGWIN)
 
 # Libarchive is a shared library
-ADD_LIBRARY(archive SHARED ${libarchive_SOURCES} ${include_HEADERS})
+ADD_LIBRARY(archive ${libarchive_SOURCES} ${include_HEADERS})
 TARGET_LINK_LIBRARIES(archive ${ADDITIONAL_LIBS})
-SET_TARGET_PROPERTIES(archive PROPERTIES SOVERSION ${SOVERSION})
-
-# archive_static is a static library
-ADD_LIBRARY(archive_static STATIC ${libarchive_SOURCES} ${include_HEADERS})
-TARGET_LINK_LIBRARIES(archive_static ${ADDITIONAL_LIBS})
-SET_TARGET_PROPERTIES(archive_static PROPERTIES COMPILE_DEFINITIONS
-  LIBARCHIVE_STATIC)
-# On Posix systems, libarchive.so and libarchive.a can co-exist.
-IF(NOT WIN32 OR CYGWIN)
-  SET_TARGET_PROPERTIES(archive_static PROPERTIES OUTPUT_NAME archive)
-ENDIF(NOT WIN32 OR CYGWIN)
+if(BUILD_SHARED_LIBS)
+  SET_TARGET_PROPERTIES(archive PROPERTIES SOVERSION ${SOVERSION})
+else()
+  SET_TARGET_PROPERTIES(archive PROPERTIES COMPILE_DEFINITIONS
+    LIBARCHIVE_STATIC)
+endif()
 
 IF(ENABLE_INSTALL)
   # How to install the libraries
-  INSTALL(TARGETS archive archive_static
+  INSTALL(TARGETS archive
           RUNTIME DESTINATION bin
           LIBRARY DESTINATION lib
           ARCHIVE DESTINATION lib)
