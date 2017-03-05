@@ -277,9 +277,8 @@ IF(ENABLE_TEST)
   # Register target
   #
   ADD_EXECUTABLE(libarchive_test ${libarchive_test_SOURCES})
-  TARGET_LINK_LIBRARIES(libarchive_test archive_static ${ADDITIONAL_LIBS})
-  SET_PROPERTY(TARGET libarchive_test PROPERTY COMPILE_DEFINITIONS
-    LIBARCHIVE_STATIC LIST_H)
+  TARGET_LINK_LIBRARIES(libarchive_test archive ${ADDITIONAL_LIBS})
+  target_compile_definitions(libarchive_test PUBLIC LIST_H)
 
   #
   # Generate list.h by grepping DEFINE_TEST() lines out of the C sources.
